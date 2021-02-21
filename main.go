@@ -82,7 +82,7 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 	w.WriteHeader(http.StatusOK)
 
 	//render template
-	err = templ.ExecuteTemplate(w,"base.html",members)
+	err = templ.ExecuteTemplate(w,"base",members)
 	Check(err)
 }
 
