@@ -12,7 +12,6 @@ package main
 import (
 	"github.com/urfave/negroni"
 	"context"
-	"encoding/json"
 	"html/template"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
