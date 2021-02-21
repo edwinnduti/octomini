@@ -11,11 +11,11 @@
 		</tr>
 	</thead>
 	<tbody>
-		{{range $key,$value := . }}
+		{{range _,$value := . }}
 		<tr class="table-primary">
 			<th scope="row">Primary</th>
-			<td>{{$Value.Name}}</td>
-			<td>{{$Value.Offering}}</td>
+			<td>{{$value.Name}}</td>
+			<td>{{$value.Offering}}</td>
 		</tr>
 	</tbody>
 </table>
