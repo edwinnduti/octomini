@@ -32,7 +32,7 @@ var (
 // Member type
 type Member struct{
 	Name		string	`json:"name"`
-	Offering	string	`json:"offering"`
+	Offering	int	`json:"offering"`
 }
 
 // database and collection names are statically declared
