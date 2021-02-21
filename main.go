@@ -38,6 +38,17 @@ type Member struct{
 	Offering	int	`json:"offering"`
 }
 
+var templates map[string]*template.Template
+//Compile view templates
+func init() {
+	if templates == nil {
+		templates = make(map[string]*template.Template)
+	}
+	templates["index"] = template.Must(template.ParseFiles("templates/index.html","templates/base.html"))
+	templates["addMember"] = template.Must(template.ParseFiles("templates/addMember.html","templates/base.html"))
+	templates["edit"] = template.Must(template.ParseFiles("templates/edit.html","templates/base.html"))
+}
+
 // database and collection names are statically declared
 const database, collection = "pceanyaga", "offeringManagement"
 
@@ -91,8 +102,7 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 /* form view */
 func MemberForm(w http.ResponseWriter,r *http.Request){
 	//render template
-	err := templ.ExecuteTemplate(w,"addMember",nil)
-        Check(err)
+	RenderTemp(w,"addMember","base",nil)
 }
 
 /* GET all  data */
@@ -121,8 +131,21 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 	w.WriteHeader(http.StatusOK)
 
 	//render template
-	err = templ.ExecuteTemplate(w,"base",members)
-	Check(err)
+	RenderTemp(w,"index","base",members)
+}
+
+/* function render template */
+//Render templates for the given name, template definition and data object
+func RenderTemp(w http.ResponseWriter, name string, template string, viewModel interface{}) {
+	// Ensure the template exists in the map.
+	tmpl, ok := templates[name]
+	if !ok {
+		http.Error(w, "The template does not exist.", http.StatusInternalServerError)
+	}
+	err := tmpl.ExecuteTemplate(w, template, viewModel)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 /* log errors */
