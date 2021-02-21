@@ -12,11 +12,12 @@ package main
 import (
 	"github.com/urfave/negroni"
 	"context"
+	"strconv"
 	"html/template"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/primitive"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
@@ -73,14 +74,16 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
         member.Id = primitive.NewObjectID()
 	member.Name = r.PostFormValue("name")
-	member.Offering = int(r.PostFormValue("offering"))
+	offering := r.FormValue("offering")
+	member.Offering,err = strconv.Atoi(offering)
+	Check(err)
 	_, err = c.InsertOne(ctx, member)
 	Check(err)
 
 	// set headers
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Method", "GET")
-	w.Write(http.StatusCreated)
+	w.WriteHeader(http.StatusCreated)
 
 	http.Redirect(w, r, "/", 302)
 }
@@ -88,7 +91,7 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 /* form view */
 func MemberForm(w http.ResponseWriter,r *http.Request){
 	//render template
-        err = templ.ExecuteTemplate(w,"addMember",nil)
+	err := templ.ExecuteTemplate(w,"addMember",nil)
         Check(err)
 }
 
