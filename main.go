@@ -56,12 +56,6 @@ func CreateConnection() (*mongo.Client, error) {
 	return client, nil
 }
 
-func Home(w http.ResponseWriter,r *http.Request){
-	//render template
-	err := templ.ExecuteTemplate(w,"index.html",nil)
-	Check(err)
-}
-
 /* GET all  data */
 func GetAllHandler(w http.ResponseWriter,r *http.Request){
         var members []Member
@@ -89,6 +83,7 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 
 	//render template
 	err = templ.ExecuteTemplate(w,"index.html",members)
+	Check(err)
 }
 
 /* log errors */
