@@ -71,10 +71,6 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
         client, err := CreateConnection()
 	Check(err)
 
-	// Decode the incoming Data json
-	err = json.NewDecoder(r.Body).Decode(&members)
-        Check(err)
-
 	// select db and collection
 	cHotel := client.Database(database).Collection(collection)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
