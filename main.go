@@ -16,6 +16,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
@@ -31,6 +32,7 @@ var (
 
 // Member type
 type Member struct{
+	Id           primitive.ObjectID `bson:"_id"  json:id"`
 	Name		string	`json:"name"`
 	Offering	int	`json:"offering"`
 }
@@ -54,6 +56,40 @@ func CreateConnection() (*mongo.Client, error) {
 
 	// return client and error
 	return client, nil
+}
+
+/* save new members */
+func PostSaveMember(w http.ResponseWriter, r *http.Request) {
+        var member Member
+
+	client, err := CreateConnection()
+	Check(err)
+
+	c := client.Database(database).Collection(collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	//create the new member
+	r.ParseForm()
+        member.Id = primitive.NewObjectID()
+	member.Name = r.PostFormValue("name")
+	member.Offering = int(r.PostFormValue("offering"))
+	_, err = c.InsertOne(ctx, member)
+	Check(err)
+
+	// set headers
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Method", "GET")
+	w.Write(http.StatusCreated)
+
+	http.Redirect(w, r, "/", 302)
+}
+
+/* form view */
+func MemberForm(w http.ResponseWriter,r *http.Request){
+	//render template
+        err = templ.ExecuteTemplate(w,"addMember",nil)
+        Check(err)
 }
 
 /* GET all  data */
@@ -109,6 +145,8 @@ func main() {
 
 	// API routes,handlers and methods
 	r.HandleFunc("/",GetAllHandler).Methods("GET","OPTIONS")
+	r.HandleFunc("/add",MemberForm).Methods("GET","OPTIONS")
+	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
 	//Get port
