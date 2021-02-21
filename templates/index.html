@@ -1,5 +1,5 @@
 {{define "body"}}
-<h1>Members and offerings List</h1>
+<h4>Members and offerings List</h4>
 
 <!-- Tables -->
 <table class="table table-hover">
@@ -14,7 +14,7 @@
 	<tbody>
 		{{range $key,$value := . }}
 		<tr class="table-primary">
-			<th scope="row">Primary</th>
+			<th scope="row">Member</th>
 			<td>{{$key}}</td>
 			<td>{{$value.Name}}</td>
 			<td>{{$value.Offering}}</td>
