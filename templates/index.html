@@ -6,14 +6,16 @@
 	<thead>
 		<tr>
 			<th scope="col">Type</th>
+			<th scope="col">Index</th>
 			<th scope="col">Member's Name</th>
 			<th scope="col">Offerings</th>
 		</tr>
 	</thead>
 	<tbody>
-		{{range _,$value := . }}
+		{{range $key,$value := . }}
 		<tr class="table-primary">
 			<th scope="row">Primary</th>
+			<td>{{$key}}</td>
 			<td>{{$value.Name}}</td>
 			<td>{{$value.Offering}}</td>
 		</tr>
