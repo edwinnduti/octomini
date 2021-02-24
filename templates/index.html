@@ -1,6 +1,7 @@
 {{define "body"}}
-<h4>Members and offerings List</h4>
-
+<h5>Members and offerings List</h5>
+<br>
+<br>
 <!-- Tables -->
 <table class="table table-hover">
 	<thead>
@@ -16,7 +17,9 @@
 		<tr class="table-primary">
 			<th scope="row">Member</th>
 			<td>{{$key}}</td>
-			<td>{{$value.Name}}</td>
+			<td>
+				<a href="/" class="text-decoration-none">{{$value.Name}}</a>
+			</td>
 			<td>{{$value.Offering}}</td>
 		</tr>
 		{{end}}

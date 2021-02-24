@@ -104,6 +104,13 @@ func MemberForm(w http.ResponseWriter,r *http.Request){
 	RenderTemp(w,"addMember","base",nil)
 }
 
+/* show member profile */
+func MemberProfile(w http.ResponseWriter,r *http.Request){
+	//render template
+	RenderTemp(w,"member","base",nil)
+}
+
+
 /* GET all  data */
 func GetAllHandler(w http.ResponseWriter,r *http.Request){
         var members []Member
@@ -172,6 +179,7 @@ func main() {
 	r.HandleFunc("/",GetAllHandler).Methods("GET","OPTIONS")
 	r.HandleFunc("/add",MemberForm).Methods("GET","OPTIONS")
 	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
+	r.HandleFunc("/profile",MemberProfile).Methods("GET","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
 	//Get port
