@@ -114,7 +114,7 @@ func MemberForm(w http.ResponseWriter,r *http.Request){
 func MemberProfile(w http.ResponseWriter,r *http.Request){
 	// get tableid
 	vars := mux.Vars(r)
-	userid, err := primitive.ObjectIDFromHex(vars["tableid"])
+	userid, err := primitive.ObjectIDFromHex(vars["userid"])
 	Check(err)
 
 	var user Member
