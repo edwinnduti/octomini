@@ -35,8 +35,9 @@ var (
 // Member type
 type Member struct{
 	Id           primitive.ObjectID `bson:"_id"  json:id"`
-	Name		string	`json:"name"`
-	Offering	int	`json:"offering"`
+	Name		string			`json:"name"`
+	Offering	int			`json:"offering"`
+	TodaysOffering	map[string]int	`json:"TodaysOffering"`
 }
 
 
@@ -87,8 +88,11 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
         member.Id = primitive.NewObjectID()
 	member.Name = r.PostFormValue("name")
-	offering := r.FormValue("offering")
-	member.Offering,err = strconv.Atoi(offering)
+	member.Offering,err = strconv.Atoi(r.FormValue("todaysOffering"))
+	Check(err)
+	todaysOffering := r.FormValue("todaysOffering")
+	timeNow := time.Now().Format("02-01-2006")
+	member.TodaysOffering[timeNow],err = strconv.Atoi(todaysOffering)
 	Check(err)
 	_, err = c.InsertOne(ctx, member)
 	Check(err)
