@@ -13,6 +13,7 @@ import (
 	"github.com/urfave/negroni"
 	"context"
 	"strconv"
+	"strings"
 	"html/template"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,6 +38,7 @@ type Member struct{
 	Name		string	`json:"name"`
 	Offering	int	`json:"offering"`
 }
+
 
 var templates map[string]*template.Template
 //Compile view templates
@@ -114,7 +116,9 @@ func MemberForm(w http.ResponseWriter,r *http.Request){
 func MemberProfile(w http.ResponseWriter,r *http.Request){
 	// get tableid
 	vars := mux.Vars(r)
-	userid, err := primitive.ObjectIDFromHex(vars["userid"])
+	id := vars["userid"]
+	id = Between(id,"ObjectID(\"","\")")
+	userid,err := primitive.ObjectIDFromHex(id)
 	Check(err)
 
 	var user Member
@@ -191,6 +195,25 @@ func Check(err error){
 		log.Fatalln(err)
 	}
 }
+
+// check whats between
+func Between(value string, a string, b string) string {
+    // Get substring between two strings.
+    posFirst := strings.Index(value, a)
+    if posFirst == -1 {
+	    return ""
+    }
+    posLast := strings.Index(value, b)
+    if posLast == -1 {
+        return ""
+    }
+    posFirstAdjusted := posFirst + len(a)
+    if posFirstAdjusted >= posLast {
+        return ""
+    }
+    return value[posFirstAdjusted:posLast]
+}
+
 
 
 // Main function
