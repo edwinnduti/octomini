@@ -117,7 +117,7 @@ func MemberProfile(w http.ResponseWriter,r *http.Request){
 	w.WriteHeader(http.StatusOK)
 
 	//render template
-	RenderTemp(w,"member","base",nil)
+	RenderTemp(w,"profilePage","base",nil)
 }
 
 
