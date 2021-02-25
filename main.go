@@ -90,10 +90,13 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	member.Name = r.PostFormValue("name")
 	member.Offering,err = strconv.Atoi(r.FormValue("todaysOffering"))
 	Check(err)
+
+	m := make(map[string]int)
 	todaysOffering := r.FormValue("todaysOffering")
 	timeNow := time.Now().Format("02-01-2006")
-	member.TodaysOffering[timeNow],err = strconv.Atoi(todaysOffering)
+	m[timeNow],err = strconv.Atoi(todaysOffering)
 	Check(err)
+	member.TodaysOffering = m
 	_, err = c.InsertOne(ctx, member)
 	Check(err)
 
