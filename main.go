@@ -100,12 +100,22 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 
 /* form view */
 func MemberForm(w http.ResponseWriter,r *http.Request){
+	// set headers
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Method", "GET")
+	w.WriteHeader(http.StatusOK)
+
 	//render template
 	RenderTemp(w,"addMember","base",nil)
 }
 
 /* show member profile */
 func MemberProfile(w http.ResponseWriter,r *http.Request){
+	// set headers
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Method", "GET")
+	w.WriteHeader(http.StatusOK)
+
 	//render template
 	RenderTemp(w,"member","base",nil)
 }
