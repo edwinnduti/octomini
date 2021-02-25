@@ -112,13 +112,33 @@ func MemberForm(w http.ResponseWriter,r *http.Request){
 
 /* show member profile */
 func MemberProfile(w http.ResponseWriter,r *http.Request){
+	// get tableid
+	vars := mux.Vars(r)
+	userid, err := primitive.ObjectIDFromHex(vars["tableid"])
+	Check(err)
+
+	var user Member
+
+	// create connection
+	client, err := CreateConnection()
+	Check(err)
+
+	// select db and collection
+        cl := client.Database(database).Collection(collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+	defer cancel()                                                                                              /*  USER DOC */
+	// find table document
+	err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&user)
+	Check(err)
+
 	// set headers
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Method", "GET")
 	w.WriteHeader(http.StatusOK)
 
 	//render template
-	RenderTemp(w,"profilePage","base",nil)
+	RenderTemp(w,"profilePage","base",user)
 }
 
 
@@ -190,7 +210,7 @@ func main() {
 	r.HandleFunc("/",GetAllHandler).Methods("GET","OPTIONS")
 	r.HandleFunc("/add",MemberForm).Methods("GET","OPTIONS")
 	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
-	r.HandleFunc("/profile",MemberProfile).Methods("GET","OPTIONS")
+	r.HandleFunc("/{userid}",MemberProfile).Methods("GET","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
 	//Get port
