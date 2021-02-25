@@ -46,6 +46,7 @@ func init() {
 	}
 	templates["index"] = template.Must(template.ParseFiles("templates/index.html","templates/base.html"))
 	templates["addMember"] = template.Must(template.ParseFiles("templates/addMember.html","templates/base.html"))
+	templates["profilePage"] = template.Must(template.ParseFiles("templates/profilePage.html","templates/base.html"))
 }
 
 // database and collection names are statically declared
