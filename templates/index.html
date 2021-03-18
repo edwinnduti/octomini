@@ -16,7 +16,7 @@
 		{{range $key,$value := . }}
 		<tr class="table-primary">
 			<th scope="row">Member</th>
-			<td>{{$key+1}}</td>
+			<td>{{$key}}</td>
 			<td>
 				<a href="/{{$value.Id}}"  class="text-decoration-none"><span class="text-white">{{$value.Name}}</span></a>
 			</td>
