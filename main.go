@@ -95,12 +95,15 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	member.Name = r.PostFormValue("name")
 
 	var today TodaysOffering
+	m := make(map[string]int)
 	todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
 	Check(err)
 
 	timeNow := time.Now().Format("02-01-2006")
 	Check(err)
-	today.TodaysOffering[timeNow] = todaysOffering
+
+	m[timeNow] = todaysOffering
+	today.TodaysOffering = m
 
 	member.AllOffering = append(member.AllOffering,today)
 	member.Total = todaysOffering
