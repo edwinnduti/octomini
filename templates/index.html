@@ -16,11 +16,11 @@
 		{{range $key,$value := . }}
 		<tr class="table-primary">
 			<th scope="row">Member</th>
-			<td>{{$key}}</td>
+			<td>{{$key+1}}</td>
 			<td>
 				<a href="/{{$value.Id}}"  class="text-decoration-none"><span class="text-white">{{$value.Name}}</span></a>
 			</td>
-			<td>{{$value.Offering}}</td>
+			<td>{{$value.Total}}</td>
 		</tr>
 		{{end}}
 	</tbody>

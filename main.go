@@ -32,12 +32,17 @@ var (
 	templ = template.Must(template.ParseGlob("templates/*.html"))
 )
 
-// Member type
+// Member type and all offerings
 type Member struct{
-	Id           primitive.ObjectID `bson:"_id"  json:id"`
+	Id		primitive.ObjectID	`bson:"_id"  json:id"`
 	Name		string			`json:"name"`
-	Offering	int			`json:"offering"`
-	TodaysOffering	map[string]int	`json:"TodaysOffering"`
+	AllOffering	[]TodaysOffering	`json:"allOffering"`
+	Total		int			`json:"total"`
+}
+
+// one day offering to store a map of date and offering
+type TodaysOffering struct{
+	TodaysOffering	map[string]int	`json:"todaysOffering"`
 }
 
 
@@ -88,15 +93,17 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
         member.Id = primitive.NewObjectID()
 	member.Name = r.PostFormValue("name")
-	member.Offering,err = strconv.Atoi(r.FormValue("todaysOffering"))
+
+	var today TodaysOffering
+	todaysOffering,err := strconv.Atoi(r.FormValue("Offering"))
 	Check(err)
 
-	m := make(map[string]int)
-	todaysOffering := r.FormValue("todaysOffering")
 	timeNow := time.Now().Format("02-01-2006")
-	m[timeNow],err = strconv.Atoi(todaysOffering)
 	Check(err)
-	member.TodaysOffering = m
+	today.TodaysOffering[timeNow] = todaysOffering
+
+	member.AllOffering = append(member.AllOffering,today)
+	member.Total = todaysOffering
 	_, err = c.InsertOne(ctx, member)
 	Check(err)
 
