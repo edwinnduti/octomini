@@ -92,7 +92,7 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	//create the new member
 	r.ParseForm()
         member.Id = primitive.NewObjectID()
-	member.Name = r.PostFormValue("name")
+	member.Name = r.FormValue("name")
 
 	var today TodaysOffering
 	m := make(map[string]int)
