@@ -90,31 +90,41 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	//create the new member
-	r.ParseForm()
-        member.Id = primitive.NewObjectID()
-	member.Name = r.FormValue("name")
+	if r.Method == "POST"{
+		r.ParseForm()
+		member.Id = primitive.NewObjectID()
+		member.Name = r.FormValue("name")
 
-	var today TodaysOffering
-	m := make(map[string]int)
-	todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
-	Checkf("string not converted",err)
+		var today TodaysOffering
+		m := make(map[string]int)
+		todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
+		Checkf("string not converted",err)
 
-	timeNow := time.Now().Format("02-01-2006")
+		timeNow := time.Now().Format("02-01-2006")
 
-	m[timeNow] = todaysOffering
-	today.TodaysOffering = m
+		m[timeNow] = todaysOffering
+		today.TodaysOffering = m
 
-	member.AllOffering = append(member.AllOffering,today)
-	member.Total = todaysOffering
-	_, err = c.InsertOne(ctx, member)
-	Check(err)
 
-	// set headers
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Method", "POST")
-	w.WriteHeader(http.StatusCreated)
+		member.AllOffering = append(member.AllOffering,today)
+		member.Total = todaysOffering
+		_, err = c.InsertOne(ctx, member)
+		Check(err)
 
-	http.Redirect(w, r, "/", 302)
+		// set headers
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Method", "POST")
+		w.WriteHeader(http.StatusCreated)
+
+		http.Redirect(w, r, "/", 302)
+	}
+	if r.Method == "GET"{
+		// set headers
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Method","GET")
+		w.WriteHeader(http.StatusOK)
+		RenderTemp(w,"addMember","base",nil)
+	}
 }
 
 /* form view */
