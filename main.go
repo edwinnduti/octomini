@@ -97,10 +97,9 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	var today TodaysOffering
 	m := make(map[string]int)
 	todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
-	Check(err)
+	Checkf("string not converted",err)
 
 	timeNow := time.Now().Format("02-01-2006")
-	Check(err)
 
 	m[timeNow] = todaysOffering
 	today.TodaysOffering = m
@@ -210,6 +209,12 @@ func RenderTemp(w http.ResponseWriter, name string, template string, viewModel i
 func Check(err error){
 	if err != nil{
 		log.Fatalln(err)
+	}
+}
+
+func Checkf(line string,err error){
+	if err != nil{
+		log.Fatalln(line," : ",err)
 	}
 }
 
