@@ -116,7 +116,8 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 
 		uri := r.URL.Path
 		if uri == "/save" {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			redirectURI := "https://"+ r.Host + "/"
+			http.Redirect(w, r, redirectURI, http.StatusSeeOther)
 		}
 	}
 	if r.Method == "GET"{
