@@ -36,13 +36,14 @@ var (
 type Member struct{
 	Id		primitive.ObjectID	`bson:"_id"  json:id"`
 	Name		string			`json:"name"`
-	AllOffering	[]TodaysOffering	`json:"allOffering"`
+	AllOffering	[]TodaysOffering	`json:"allOfferings"`
 	Total		int			`json:"total"`
 }
 
 // one day offering to store a map of date and offering
 type TodaysOffering struct{
-	TodaysOffering	map[string]int	`json:"todaysOffering"`
+	Date		string	`json:"date"`
+	Offering	int	`json:"todaysOffering"`
 }
 
 
@@ -96,15 +97,12 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 		member.Name = r.FormValue("name")
 
 		var today TodaysOffering
-		m := make(map[string]int)
+
 		todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
 		Checkf("string not converted",err)
 
-		timeNow := time.Now().Format("02-01-2006")
-
-		m[timeNow] = todaysOffering
-		today.TodaysOffering = m
-
+		today.Date = time.Now().Format("02-01-2006")
+		today.Offering = todaysOffering
 
 		member.AllOffering = append(member.AllOffering,today)
 		member.Total = todaysOffering
