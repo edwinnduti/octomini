@@ -108,7 +108,7 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 
 		member.AllOffering = append(member.AllOffering,today)
 		member.Total = todaysOffering
-		result, err = c.InsertOne(ctx, member)
+		result, err := c.InsertOne(ctx, member)
 		Check(err)
 		fmt.Println("added new object of Id ",result.InsertedID.(primitive.ObjectID))
 
