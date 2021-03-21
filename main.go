@@ -23,6 +23,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"fmt"
 	"time"
 )
 
@@ -91,9 +92,10 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	//create the new member
+	member.Id = primitive.NewObjectID()
+
 	if r.Method == "POST"{
 		r.ParseForm()
-		member.Id = primitive.NewObjectID()
 		member.Name = r.FormValue("name")
 
 		var today TodaysOffering
@@ -106,8 +108,9 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 
 		member.AllOffering = append(member.AllOffering,today)
 		member.Total = todaysOffering
-		_, err = c.InsertOne(ctx, member)
+		result, err = c.InsertOne(ctx, member)
 		Check(err)
+		fmt.Println("added new object of Id ",result.InsertedID.(primitive.ObjectID))
 
 		// set headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")
