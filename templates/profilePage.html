@@ -44,17 +44,17 @@
 									<hr />
 									<div class="row">
 										<div class="col-sm-3 col-md-2 col-5">
-											<label style="font-weight:bold;">Name</label>
+											<label style="font-weight:bold;">Total Offering</label>
 										</div>
 										<div class="col-md-8 col-6">{{.Total}}</div>
 									</div>
 									<hr />
-									{{range $date,$offering := .AllOffering}}
+									{{range $key,$offering := .AllOffering}}
 									<div class="row">
 										<div class="col-sm-3 col-md-2 col-5"> 
-											<label style="font-weight:bold;">{{$date}}</label>
+											<label style="font-weight:bold;">{{$offering.Date}}</label>
 										</div>
-										<div class="col-md-8 col-6">{{$offering}}</div>
+										<div class="col-md-8 col-6">{{$offering.Offering}}</div>
 									</div>
 									<hr />
 									{{end}}
@@ -71,7 +71,7 @@
 			<div class="col-sm-3 col-md-2 col-5">
 				<label style="font-weight:bold;">Total Offering</label>
 			</div>
-			<div class="col-md-8 col-6">{{.Offering}}
+			<div class="col-md-8 col-6">{{.Total}}
 			</div>
 									</div>
 									<hr />
@@ -79,7 +79,7 @@
 										<div class="col-sm-3 col-md-2 col-5">
 											<label style="font-weight:bold;">Gender</label>
 										</div>
-										<div class="col-md-8 col-6">>None
+										<div class="col-md-8 col-6">>Not Specified
 										</div>
 									</div>
 									<hr />

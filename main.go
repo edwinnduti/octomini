@@ -115,7 +115,6 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 		// set headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Method", "POST")
-		// w.WriteHeader(http.StatusCreated)
 
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
