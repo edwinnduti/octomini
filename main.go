@@ -115,13 +115,9 @@ func PostSaveMember(w http.ResponseWriter, r *http.Request) {
 		// set headers
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Method", "POST")
-		w.WriteHeader(http.StatusCreated)
+		// w.WriteHeader(http.StatusCreated)
 
-		uri := r.URL.Path
-		if uri == "/save" {
-			redirectURI := "https://"+ r.Host + "/"
-			http.Redirect(w, r, redirectURI, http.StatusSeeOther)
-		}
+		http.Redirect(w, r, "/", http.StatusFound)
 	}
 	if r.Method == "GET"{
 		// set headers
