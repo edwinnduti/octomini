@@ -301,7 +301,7 @@ func main() {
 	r.HandleFunc("/add",MemberForm).Methods("GET","OPTIONS")
 	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
 	r.HandleFunc("/{userid}",MemberProfile).Methods("GET","OPTIONS")
-	r.HandleFunc("{userid}/edit",UpdateForm).Methods("GET","OPTIONS")
+	r.HandleFunc("/{userid}/edit",UpdateForm).Methods("GET","OPTIONS")
 	//r.HandleFunc("/update/{userid}",MemberProfile).Methods("PUT","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
