@@ -252,7 +252,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 
 	// set headers
 	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Method","PUT")
+	w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
 	//w.WriteHeader(http.StatusOK)
 
 	//redirect to profile
