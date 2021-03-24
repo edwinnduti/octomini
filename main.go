@@ -246,6 +246,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	if r.Method == "PUT"{
 		uri := fmt.Sprintf("/%s",id)
 		http.Redirect(w,r,uri,http.StatusSeeOther)
+	}
 }
 
 // update form section
