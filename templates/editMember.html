@@ -7,8 +7,8 @@
 		<div class="form-group">
 			<div class="col-xs-2">
 				<label for="name">Member Name</label>
-				<input type="text" class="form-control" id="name" name="name" value={{.Name}} aria-describedby="nameHelp" placeholder="Enter Member Name">
-				<small id="nameHelp" class="form-text text-muted">Name should <i>NOT</i> be changed unless misspelt.</small>
+				<input type="text" readonly="" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="{{.Name}}">
+				<small id="nameHelp" class="form-text text-muted">Name is in <i>READONLY</i> form;It should not be changed.</small>
 			</div>
 		</div>
 		<div class="form-group">

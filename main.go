@@ -202,9 +202,53 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 	RenderTemp(w,"index","base",members)
 }
 
-// update form 
-func UpdateForm(w http.ResponseWriter,r *http.Request){
+// update user profile
+func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	// get tableid
+	vars := mux.Vars(r)
+	id := vars["userid"]
+	objId := Between(id,"ObjectID(\"","\")")
+	userid,err := primitive.ObjectIDFromHex(objId)
+	Check(err)
+
+	// create connection
+	client, err := CreateConnection()
+	Check(err)
+
+	// select db and collection
+	cl := client.Database(database).Collection(collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+	defer cancel()
+
+	/*  USER DOC */
+	var today TodaysOffering
+	todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
+	Checkf("string not converted",err)
+
+	today.Date = time.Now().Format("02-01-2006")
+	today.Offering = todaysOffering
+
+	// find table document
+	filter := bson.M{"_id": userid}
+	update := bson.D{
+		{"$push", bson.D{{"allOfferings", today}}},
+	}
+	_ ,err = cl.UpdateOne(ctx, filter, update)
+	Check(err)
+
+	// set headers
+	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Access-Control-Allow-Method","PUT")
+
+	//redirect to profile
+	uri := fmt.Sprintf("/%s",id)
+	http.Redirect(w,r,uri,http.StatusFound)
+}
+
+// update form section
+func UpdateForm(w http.ResponseWriter,r *http.Request){
+	// get userid
 	vars := mux.Vars(r)
 	id := vars["userid"]
 	id = Between(id,"ObjectID(\"","\")")
@@ -212,6 +256,7 @@ func UpdateForm(w http.ResponseWriter,r *http.Request){
 	Check(err)
 
 	var user Member
+
 	// create connection
 	client, err := CreateConnection()
 	Check(err)
@@ -302,7 +347,7 @@ func main() {
 	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
 	r.HandleFunc("/{userid}",MemberProfile).Methods("GET","OPTIONS")
 	r.HandleFunc("/{userid}/edit",UpdateForm).Methods("GET","OPTIONS")
-	//r.HandleFunc("/update/{userid}",MemberProfile).Methods("PUT","OPTIONS")
+	r.HandleFunc("/update/{userid}",UpdateProfile).Methods("PUT","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
 	//Get port
