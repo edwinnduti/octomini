@@ -211,53 +211,65 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	userid,err := primitive.ObjectIDFromHex(objId)
 	Check(err)
 
-	//var member Member
+	if r.Method == "GET"{
+		// set headers
+		w.Header().Set("Access-Control-Allow-Origin","*")
+		w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
+		w.WriteHeader(http.StatusOK)
 
-	// create connection
-	client, err := CreateConnection()
+		//redirect to profile
+		uri := fmt.Sprintf("/%s",id)
+		http.Redirect(w,r,uri,http.StatusSeeOther)
+	} else{
+
+		//var member Member
+
+		// create connection
+		client, err := CreateConnection()
+		Check(err)
+
+		// select db and collection
+		cl := client.Database(database).Collection(collection)
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+		defer cancel()
+
+		// find user document
+		/*err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
 	Check(err)
 
-	// select db and collection
-	cl := client.Database(database).Collection(collection)
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		// get total offerings
+		total := 0
+		for _,value := range member.AllOffering{
+			total = total + value.Offering
+		}
 
-	defer cancel()
+		/*  USER DOC */
+		var today TodaysOffering
+		todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
+		Checkf("string not converted",err)
 
-	// find user document
-	/*err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
-	Check(err)
+		today.Date = time.Now().Format("02-01-2006")
+		today.Offering = todaysOffering
 
-	// get total offerings
-	total := 0
-	for _,value := range member.AllOffering{
-		total = total + value.Offering
+		// find table document
+		filter := bson.M{"_id": userid}
+		update := bson.D{
+			{"$push", bson.D{{"allOfferings", today}}},
+			//{"$set", bson.D{{"total",total}}},
+		}
+		_ ,err = cl.UpdateOne(ctx, filter, update)
+		Check(err)
+
+		// set headers
+		w.Header().Set("Access-Control-Allow-Origin","*")
+		w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
+		//w.WriteHeader(http.StatusOK)
+
+		//redirect to profile
+		uri := fmt.Sprintf("/%s",id)
+		http.Redirect(w,r,uri,http.StatusSeeOther)
 	}
-
-	/*  USER DOC */
-	var today TodaysOffering
-	todaysOffering,err := strconv.Atoi(r.FormValue("offering"))
-	Checkf("string not converted",err)
-
-	today.Date = time.Now().Format("02-01-2006")
-	today.Offering = todaysOffering
-
-	// find table document
-	filter := bson.M{"_id": userid}
-	update := bson.D{
-		{"$push", bson.D{{"allOfferings", today}}},
-		//{"$set", bson.D{{"total",total}}},
-	}
-	_ ,err = cl.UpdateOne(ctx, filter, update)
-	Check(err)
-
-	// set headers
-	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
-	//w.WriteHeader(http.StatusOK)
-
-	//redirect to profile
-	uri := fmt.Sprintf("/%s",id)
-	http.Redirect(w,r,uri,http.StatusSeeOther)
 }
 
 // update form section
