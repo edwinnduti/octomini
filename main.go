@@ -211,6 +211,8 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	userid,err := primitive.ObjectIDFromHex(objId)
 	Check(err)
 
+	var member Member
+
 	// create connection
 	client, err := CreateConnection()
 	Check(err)
@@ -220,6 +222,16 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
 	defer cancel()
+
+	// find user document
+	err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
+	Check(err)
+
+	// get total offerings
+	total := 0
+	for _,value := range member.AllOffering{
+		total = total + value.Offering
+	}
 
 	/*  USER DOC */
 	var today TodaysOffering
@@ -233,20 +245,19 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	filter := bson.M{"_id": userid}
 	update := bson.D{
 		{"$push", bson.D{{"allOfferings", today}}},
+		{"$set", bson.D{{"total",total}}},
 	}
 	_ ,err = cl.UpdateOne(ctx, filter, update)
 	Check(err)
 
 	// set headers
-	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Method","PUT")
+	/*w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Access-Control-Allow-Method","PUT")*/
 	w.WriteHeader(http.StatusOK)
 
 	//redirect to profile
-	if r.Method == "PUT"{
-		uri := fmt.Sprintf("/%s",id)
-		http.Redirect(w,r,uri,http.StatusSeeOther)
-	}
+	uri := fmt.Sprintf("/%s",id)
+	http.Redirect(w,r,uri,http.StatusSeeOther)
 }
 
 // update form section
