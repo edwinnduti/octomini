@@ -224,7 +224,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	defer cancel()
 
 	// find user document
-	err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
+	/*err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
 	Check(err)
 
 	// get total offerings
@@ -245,7 +245,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	filter := bson.M{"_id": userid}
 	update := bson.D{
 		{"$push", bson.D{{"allOfferings", today}}},
-		{"$set", bson.D{{"total",total}}},
+		//{"$set", bson.D{{"total",total}}},
 	}
 	_ ,err = cl.UpdateOne(ctx, filter, update)
 	Check(err)
@@ -256,10 +256,8 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	w.WriteHeader(http.StatusOK)
 
 	//redirect to profile
-	if r.Method == "GET"{
-		uri := fmt.Sprintf("/%s",id)
-		http.Redirect(w,r,uri,http.StatusSeeOther)
-	}
+	uri := fmt.Sprintf("/%s",id)
+	http.Redirect(w,r,uri,http.StatusSeeOther)
 }
 
 // update form section
