@@ -251,13 +251,15 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	Check(err)
 
 	// set headers
-	/*w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Method","PUT")*/
+	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Access-Control-Allow-Method","PUT")
 	w.WriteHeader(http.StatusOK)
 
 	//redirect to profile
-	uri := fmt.Sprintf("/%s",id)
-	http.Redirect(w,r,uri,http.StatusSeeOther)
+	if r.Method == "GET"{
+		uri := fmt.Sprintf("/%s",id)
+		http.Redirect(w,r,uri,http.StatusSeeOther)
+	}
 }
 
 // update form section
