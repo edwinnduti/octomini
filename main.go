@@ -204,7 +204,7 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 
 // update user profile
 func UpdateProfile(w http.ResponseWriter,r *http.Request){
-	// get tableid
+	// get userid
 	vars := mux.Vars(r)
 	id := vars["userid"]
 	objId := Between(id,"ObjectID(\"","\")")
@@ -243,8 +243,9 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	w.WriteHeader(http.StatusOK)
 
 	//redirect to profile
-	uri := fmt.Sprintf("/%s",id)
-	http.Redirect(w,r,uri,http.StatusFound)
+	if r.Method == "PUT"{
+		uri := fmt.Sprintf("/%s",id)
+		http.Redirect(w,r,uri,http.StatusSeeOther)
 }
 
 // update form section
