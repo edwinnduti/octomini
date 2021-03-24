@@ -1,12 +1,13 @@
 {{define "body"}}
 
 <!-- Forms -->
-<form action="/update/{{.Id}}" method="PUT">
+<form action="/update/{{.Id}}" method="POST">
 	<fieldset>
 		<legend>Member Details</legend>
 		<div class="form-group">
 			<div class="col-xs-2">
 				<label for="name">Member Name</label>
+				<input type="hidden" name="_METHOD" value="PUT"/>
 				<input type="text" readonly="" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="{{.Name}}">
 				<small id="nameHelp" class="form-text text-muted">Name is in <i>READONLY</i> form;It should not be changed.</small>
 			</div>
