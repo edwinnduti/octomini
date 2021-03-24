@@ -57,6 +57,7 @@ func init() {
 	templates["index"] = template.Must(template.ParseFiles("templates/index.html","templates/base.html"))
 	templates["addMember"] = template.Must(template.ParseFiles("templates/addMember.html","templates/base.html"))
 	templates["profilePage"] = template.Must(template.ParseFiles("templates/profilePage.html","templates/base.html"))
+	templates["editMember"] = template.Must(template.ParseFiles("templates/editMember.html","templates/base.html"))
 }
 
 // database and collection names are statically declared
@@ -201,6 +202,40 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 	RenderTemp(w,"index","base",members)
 }
 
+// update form 
+func UpdateForm(w http.ResponseWriter,r *http.Request){
+	// get tableid
+	vars := mux.Vars(r)
+	id := vars["userid"]
+	id = Between(id,"ObjectID(\"","\")")
+	userid,err := primitive.ObjectIDFromHex(id)
+	Check(err)
+
+	var user Member
+	// create connection
+	client, err := CreateConnection()
+	Check(err)
+
+	// select db and collection
+	cl := client.Database(database).Collection(collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+	defer cancel()
+
+	/*  USER DOC */
+	// find table document
+	err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&user)
+	Check(err)
+
+	// set headers
+	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Access-Control-Allow-Method","GET")
+	w.WriteHeader(http.StatusOK)
+
+	//render template
+	RenderTemp(w,"editMember","base",user)
+}
+
 /* function render template */
 //Render templates for the given name, template definition and data object
 func RenderTemp(w http.ResponseWriter, name string, template string, viewModel interface{}) {
@@ -266,6 +301,8 @@ func main() {
 	r.HandleFunc("/add",MemberForm).Methods("GET","OPTIONS")
 	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
 	r.HandleFunc("/{userid}",MemberProfile).Methods("GET","OPTIONS")
+	r.HandleFunc("{userid}/edit",MemberProfile).Methods("GET","OPTIONS")
+	//r.HandleFunc("/update/{userid}",MemberProfile).Methods("PUT","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
 	//Get port
