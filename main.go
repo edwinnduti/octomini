@@ -208,20 +208,11 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	fmt.Println("Method in place == ",r.Method)
 	vars := mux.Vars(r)
 	id := vars["userid"]
-	objId := Between(id,"ObjectID(\"","\")")
-	userid,err := primitive.ObjectIDFromHex(objId)
-	Check(err)
 
-	if r.Method == "GET"{
-		// set headers
-		w.Header().Set("Access-Control-Allow-Origin","*")
-		w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
-		w.WriteHeader(http.StatusOK)
-
-		//redirect to profile
-		uri := fmt.Sprintf("/%s",id)
-		http.Redirect(w,r,uri,http.StatusSeeOther)
-	} else{
+	if r.Method == "POST"{
+		objId := Between(id,"ObjectID(\"","\")")
+		userid,err := primitive.ObjectIDFromHex(objId)
+		Check(err)
 
 		//var member Member
 
@@ -271,6 +262,14 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		uri := fmt.Sprintf("/%s",id)
 		http.Redirect(w,r,uri,http.StatusSeeOther)
 	}
+	// set headers
+         w.Header().Set("Access-Control-Allow-Origin","*")
+	 w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
+        //w.WriteHeader(http.StatusOK)
+
+	//redirect to profile
+         uri := fmt.Sprintf("/%s",id)
+	 http.Redirect(w,r,uri,http.StatusSeeOther)
 }
 
 // update form section
@@ -374,7 +373,7 @@ func main() {
 	r.HandleFunc("/save",PostSaveMember).Methods("POST","OPTIONS")
 	r.HandleFunc("/{userid}",MemberProfile).Methods("GET","OPTIONS")
 	r.HandleFunc("/{userid}/edit",UpdateForm).Methods("GET","OPTIONS")
-	r.HandleFunc("/update/{userid}",UpdateProfile).Methods("PUT","OPTIONS")
+	r.HandleFunc("/update/{userid}",UpdateProfile).Methods("POST","OPTIONS")
 	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
 	//Get port
