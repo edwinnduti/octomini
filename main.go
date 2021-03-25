@@ -228,7 +228,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		defer cancel()
 
 		// find user document
-		/*err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
+		err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
 	Check(err)
 
 		// get total offerings
