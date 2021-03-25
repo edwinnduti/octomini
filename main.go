@@ -253,11 +253,11 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		}
 		_ ,err = cl.UpdateOne(ctx, filter, update)
 		Check(err)
+		fmt.Println("runs well upto here\n")
 
 		// set headers
 		w.Header().Set("Access-Control-Allow-Origin","*")
-		w.Header().Set("Access-Control-Allow-Methods","POST, GET, OPTIONS, PUT, DELETE")
-		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Access-Control-Allow-Method","POST")
 
 		//redirect to profile
 		uri := fmt.Sprintf("/%s",id)
