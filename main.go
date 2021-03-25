@@ -251,8 +251,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 			"$push": bson.M{"allOfferings": today},
 			"$set": bson.M{
 				"total":bson.M{"$sum":"allOfferings.$.todaysOffering"},
-			}
-		}
+			}}
 		_ ,err = cl.UpdateOne(ctx, filter, update)
 		Check(err)
 		fmt.Println("runs well upto here\n")
