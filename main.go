@@ -205,6 +205,7 @@ func GetAllHandler(w http.ResponseWriter,r *http.Request){
 // update user profile
 func UpdateProfile(w http.ResponseWriter,r *http.Request){
 	// get userid
+	fmt.Println("Method in place == ",r.Method)
 	vars := mux.Vars(r)
 	id := vars["userid"]
 	objId := Between(id,"ObjectID(\"","\")")
