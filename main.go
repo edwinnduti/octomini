@@ -215,7 +215,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		userid,err := primitive.ObjectIDFromHex(objId)
 		Check(err)
 
-		//var member Member
+		var member Member
 
 		// create connection
 		client, err := CreateConnection()
