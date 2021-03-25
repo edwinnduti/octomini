@@ -215,7 +215,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		userid,err := primitive.ObjectIDFromHex(objId)
 		Check(err)
 
-		var member Member
+		//var member Member
 
 		// create connection
 		client, err := CreateConnection()
@@ -228,14 +228,14 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		defer cancel()
 
 		// find user document
-		err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
+		/*err = cl.FindOne(ctx, bson.M{"_id": userid}).Decode(&member)
 	Check(err)
 
 		// get total offerings
 		total := 0
 		for _,value := range member.AllOffering{
 			total = total + value.Offering
-		}
+		}*/
 
 		/*  USER DOC */
 		var today TodaysOffering
@@ -247,9 +247,12 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 
 		// find table document
 		filter := bson.M{"_id": userid}
-		update := bson.D{
-			{"$push", bson.D{{"allOfferings", today}}},
-			{"$set", bson.D{{"total",total}}},
+		update := bson.M{
+			"$push": bson.M{"allOfferings": today},
+			"$set": bson.M{
+				"total":bson.M{
+					"$sum":"$allOfferings.$todaysOffering"},
+				},
 		}
 		_ ,err = cl.UpdateOne(ctx, filter, update)
 		Check(err)
