@@ -247,10 +247,16 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 
 		// find table document
 		filter := bson.M{"_id": userid}
+		//firstUpdate := bson.D{{"$push", bson.D{{"allOfferings", today}}}}
+		//secondUpdate := bson.D{{"$set", bson.D{{"total", bson.D{{"$sum":"allOfferings.todaysOffering"}}}}}}
 		update := bson.M{
-			"$push": bson.M{"allOfferings": today},
-			"$set": bson.M{
-				"total":bson.M{"$sum":"allOfferings.$todaysOffering"}}}
+			"$group": bson.M{
+				"$push": bson.M{"allOfferings": today},
+				"$set": bson.M{
+					"total":bson.M{"$sum":"allOfferings.todaysOffering"},
+				},
+			},
+		}
 		_ ,err = cl.UpdateOne(ctx, filter, update)
 		Check(err)
 		fmt.Println("runs well upto here\n")
