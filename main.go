@@ -251,7 +251,7 @@ func UpdateProfile(w http.ResponseWriter,r *http.Request){
 		//secondUpdate := bson.D{{"$set", bson.D{{"total", bson.D{{"$sum":"allOfferings.todaysOffering"}}}}}}
 		update := bson.D{
 			{Key:"$set", Value: bson.M{"total":bson.M{"$sum": "allOfferings.todaysOffering"}}},
-			{Key:"$push", Value:  bson.M{"allOfferings": today}}
+			{Key:"$push", Value:  bson.M{"allOfferings": today}},
 		}
 		_ ,err = cl.UpdateOne(ctx, filter, update)
 		Check(err)
